@@ -4,6 +4,8 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Main {
     public static final String ANSI_RESET = "\u001B[0m";
@@ -26,7 +28,16 @@ public class Main {
         initialize();
         registerClasses();
         startListener();
+        startInputListener();
 
+
+
+    }
+
+
+    private static void startInputListener() {
+        Thread thread = new InputListener();
+        thread.start();
 
 
     }
@@ -35,8 +46,11 @@ public class Main {
         kryo.register(RegisterRequest.class);
         kryo.register(AuthenticationConfirmation.class);
         kryo.register(KeepAlive.class);
+        kryo.register(Command.class);
 
     }
+
+
 
    private static void startListener() {
        server.addListener(new Listener() {
@@ -47,13 +61,23 @@ public class Main {
                    System.out.println(request.getIpAddress());
                    if (request.getIpAddress().trim().equals(connection.getRemoteAddressTCP().getHostString().trim())) {
 
-                           authenticatedIps.add(request.getIpAddress());
+                           if (!authenticatedIps.contains(request.getIpAddress())) authenticatedIps.add(request.getIpAddress());
                            log("Sending authentication confirmation");
                            connection.sendTCP(new AuthenticationConfirmation(request.getHostName(),request.getIpAddress(),connection.getID()));
                            log("Successfully authenticated: "+request.getHostName());
 
 
                            //TODO Send keep alives to the client periodically, make client check for them and set unauthenticated if they're not there after x time
+
+                           Timer timer = new Timer("Timer");
+                           TimerTask task = new TimerTask() {
+                               public void run() {
+                                  connection.sendTCP(new KeepAlive());
+                               }
+
+                           };
+                           timer.scheduleAtFixedRate(task,1000,3000);
+
 
 
 
@@ -97,5 +121,8 @@ public class Main {
     }
     public static void error(String message) {
         System.out.println(ANSI_RED+"[Command] "+ANSI_RESET+message);
+    }
+    public static void commandLog(String message, String host)  {
+        System.out.println(ANSI_BLUE+"[COMMAND SENT]["+host+"] "+ANSI_RESET+message);
     }
 }
