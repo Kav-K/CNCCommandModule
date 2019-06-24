@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="On explicit save action" serverName="intermediary.kaveenk.com" autoUploadExternalChanges="true">
+    <serverData>
+      <paths name="intermediary.kaveenk.com">
+        <serverdata>
+          <mappings>
+            <mapping deploy="CNCCommand.jar" local="$PROJECT_DIR$/build/libs/cnccommandmodule-1.0-SNAPSHOT-all.jar" web="/" />
+            <mapping local="" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ON_EXPLICIT_SAVE" />
+  </component>
+</project>
