@@ -28,10 +28,27 @@ public class Main {
         initialize();
         registerClasses();
         startListener();
+        startCommandResponseListener();
         startInputListener();
 
 
 
+
+    }
+
+    private static void startCommandResponseListener() {
+        server.addListener(new Listener() {
+            public void received(Connection connection, Object object) {
+                if (object instanceof CommandResponse) {
+
+                    CommandResponse commandResponse = (CommandResponse) object;
+                    commandResponseLog(commandResponse.getResponseMessage(), connection.getRemoteAddressTCP().getAddress().getHostAddress());
+
+
+                }
+            }
+
+        });
     }
 
 
@@ -47,6 +64,7 @@ public class Main {
         kryo.register(AuthenticationConfirmation.class);
         kryo.register(KeepAlive.class);
         kryo.register(Command.class);
+        kryo.register(CommandResponse.class);
 
     }
 
@@ -124,5 +142,9 @@ public class Main {
     }
     public static void commandLog(String message, String host)  {
         System.out.println(ANSI_BLUE+"[COMMAND SENT]["+host+"] "+ANSI_RESET+message);
+    }
+
+    public static void commandResponseLog(String message, String host) {
+        System.out.println(ANSI_YELLOW + "[COMMAND RESPONSE][" + host + "] " + ANSI_RESET + message);
     }
 }
