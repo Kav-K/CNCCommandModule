@@ -33,6 +33,8 @@ public class Main {
     private static void registerClasses() {
         Kryo kryo = server.getKryo();
         kryo.register(RegisterRequest.class);
+        kryo.register(AuthenticationConfirmation.class);
+        kryo.register(KeepAlive.class);
 
     }
 
@@ -41,18 +43,24 @@ public class Main {
            public void received (Connection connection, Object object) {
                if (object instanceof RegisterRequest) {
                    RegisterRequest request = (RegisterRequest) object;
+                   System.out.println(connection.getRemoteAddressTCP().getAddress().getHostAddress());
+                   System.out.println(request.getIpAddress());
                    if (request.getIpAddress().trim().equals(connection.getRemoteAddressTCP().getHostString().trim())) {
-                       if (request.getHostName().trim().equals(connection.getRemoteAddressTCP().getHostName().trim())) {
+
                            authenticatedIps.add(request.getIpAddress());
+                           log("Sending authentication confirmation");
                            connection.sendTCP(new AuthenticationConfirmation(request.getHostName(),request.getIpAddress(),connection.getID()));
+                           log("Successfully authenticated: "+request.getHostName());
+
+
+                           //TODO Send keep alives to the client periodically, make client check for them and set unauthenticated if they're not there after x time
 
 
 
 
-                       } else {
-                           connection.close();
-                       }
+
                    } else {
+                       error("Invalid authentication request was sent by: "+request.getHostName());
                        connection.close();
                    }
 
