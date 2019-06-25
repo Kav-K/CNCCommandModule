@@ -1,6 +1,6 @@
 # CNCCommandModule
 
-This is the counterpart Command module of the Command-And-Control communication program that I have written in java.
+This is the counterpart COMMAND module of the Command-And-Control communication program that I have written in java.
 The CLIENT module can be found at https://github.com/Kav-K/CNCClientModule
 
 Command-And-Control allows you to control multiple machines running a Linux-style operating system from one commanding machine.
