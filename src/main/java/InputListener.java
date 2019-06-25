@@ -3,6 +3,9 @@ import com.esotericsoftware.kryonet.Connection;
 import java.util.Scanner;
 
 public class InputListener extends Thread {
+    /*
+    Scans for input in console in a new thread.
+     */
     Scanner reader = new Scanner(System.in);
 
 
@@ -28,9 +31,10 @@ public class InputListener extends Thread {
     private void sendCommand(String input) {
         try {
             for (Connection c : Main.server.getConnections()) {
-                if (Main.authenticatedIps.contains(c.getRemoteAddressTCP().getAddress().getHostAddress())) {
+                if (Main.authenticatedClients.containsKey(c.getRemoteAddressTCP().getAddress().getHostAddress())) {
                     c.sendTCP(new Command(input));
-                    Main.commandLog(input,c.getRemoteAddressTCP().getAddress().getHostAddress());
+
+                    Main.commandLog(input,c.getRemoteAddressTCP().getAddress().getHostAddress(),Main.authenticatedClients.get(c.getRemoteAddressTCP().getAddress().getHostAddress()));
                 }
             }
 
