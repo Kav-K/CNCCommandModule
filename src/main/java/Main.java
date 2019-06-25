@@ -26,11 +26,13 @@ public class Main {
 
     static Server server;
 
+    static boolean reconnectRequest = false;
+
     //Maps of <IP><Hostname> that have successfully authenticated with this command server.
     public static HashMap<String, String> authenticatedClients = new HashMap<String, String>();
 
     //List of classes to be registered with kryo for serialization/deserialization
-    public static final List<Class> KRYO_CLASSES = Arrays.asList(AuthenticationConfirmation.class, Command.class, CommandResponse.class, KeepAlive.class, RegisterRequest.class, KillRequest.class
+    public static final List<Class> KRYO_CLASSES = Arrays.asList(ReconnectRequest.class,AuthenticationConfirmation.class, Command.class, CommandResponse.class, KeepAlive.class, RegisterRequest.class, KillRequest.class
     );
 
 
@@ -104,16 +106,21 @@ public class Main {
 
                         if (!authenticatedClients.containsKey(request.getIpAddress()))
                             authenticatedClients.put(request.getIpAddress(), request.getHostName());
-                        log("Sending authentication confirmation");
+                        log("Sending authentication confirmation to ["+request.getHostName()+"] at [" +request.getIpAddress()+"]");
                         connection.sendTCP(new AuthenticationConfirmation(request.getHostName(), request.getIpAddress(), connection.getID()));
-                        log("Successfully authenticated: " + request.getHostName());
+                        log("Successfully authenticated: [" + request.getHostName() +"] at ["+request.getIpAddress()+"]");
 
 
                         //Sends periodic keepalives to the client to ascertain the connection and to tell the client that command is still online.
                         Timer timer = new Timer("Timer");
                         TimerTask task = new TimerTask() {
                             public void run() {
-                                connection.sendTCP(new KeepAlive());
+                                //Skip two keepalives if there is an active reconnectRequest
+                                if (!reconnectRequest) {
+                                    connection.sendTCP(new KeepAlive());
+                                } else {
+                                    reconnectRequest = false;
+                                }
                             }
 
                         };
@@ -121,7 +128,7 @@ public class Main {
 
 
                     } else {
-                        error("Invalid authentication request was sent by: " + request.getHostName());
+                        error("Invalid authentication request was sent by: [" + request.getHostName() +"] at ["+request.getIpAddress()+"]");
                         connection.close();
                     }
 

@@ -11,9 +11,9 @@ Command-And-Control allows you to control multiple machines running a Linux-styl
 - Displays output for all clients individually when executing a command
 - Clients automatically reconnect to command if the command server is offline for x time, or undergoes an update
 - Kill function to terminate all clients
+- Reconnection feature (Reconnect clients manually from command)
 ## Todo
 - Send commands to individual clients only (WIP)
-- Kill function to terminate all clients (DONE)
 - Obtain client system information/statistics
 - Start clients on system startup
 

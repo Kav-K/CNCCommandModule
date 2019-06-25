@@ -29,10 +29,9 @@ public class InputListener extends Thread {
     }
 
     private void sendCommand(String input) {
-        if (Main.server.getConnections().length <1) {
+        if (Main.server.getConnections().length < 1) {
             Main.error("There are no active client connections to dispatch commands to");
             start();
-
 
         }
 
@@ -42,15 +41,25 @@ public class InputListener extends Thread {
                 if (Main.authenticatedClients.containsKey(c.getRemoteAddressTCP().getAddress().getHostAddress())) {
                     if (input.equals("_KILL_")) {
                         c.sendTCP(new KillRequest(false));
-                        Main.commandLog("--SENT KILL REQUEST--",c.getRemoteAddressTCP().getAddress().getHostAddress(),Main.authenticatedClients.get(c.getRemoteAddressTCP().getAddress().getHostAddress()));
+                        Main.commandLog("--SENT KILL REQUEST--", c.getRemoteAddressTCP().getAddress().getHostAddress(), Main.authenticatedClients.get(c.getRemoteAddressTCP().getAddress().getHostAddress()));
                         Main.authenticatedClients.remove(c.getRemoteAddressTCP().getAddress().getHostAddress());
+                        continue;
+                    } else if (input.equals("_LIST_")) {
+                        System.out.println(Main.ANSI_GREEN+"------ Connection "+c.getID()+" ------");
+                        System.out.println(Main.ANSI_RED + "[" + c.getRemoteAddressTCP().getAddress().getHostAddress() + "] " + Main.ANSI_YELLOW + "[" + Main.authenticatedClients.get(c.getRemoteAddressTCP().getAddress().getHostAddress()) + "]");
+                        continue;
+
+                    } else if (input.equals("_RECONNECT_")) {
+                        c.sendTCP(new ReconnectRequest(2000));
+                        Main.commandLog("--SENT RECONNECT REQUEST--", c.getRemoteAddressTCP().getAddress().getHostAddress(), Main.authenticatedClients.get(c.getRemoteAddressTCP().getAddress().getHostAddress()));
+                        Main.reconnectRequest = true;
                         continue;
                     }
 
 
                     c.sendTCP(new Command(input));
 
-                    Main.commandLog(input,c.getRemoteAddressTCP().getAddress().getHostAddress(),Main.authenticatedClients.get(c.getRemoteAddressTCP().getAddress().getHostAddress()));
+                    Main.commandLog(input, c.getRemoteAddressTCP().getAddress().getHostAddress(), Main.authenticatedClients.get(c.getRemoteAddressTCP().getAddress().getHostAddress()));
                 }
             }
 
