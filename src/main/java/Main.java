@@ -30,7 +30,8 @@ public class Main {
     public static HashMap<String, String> authenticatedClients = new HashMap<String, String>();
 
     //List of classes to be registered with kryo for serialization/deserialization
-    public static final List<Class> KRYO_CLASSES = Arrays.asList(AuthenticationConfirmation.class, Command.class, CommandResponse.class, KeepAlive.class, RegisterRequest.class);
+    public static final List<Class> KRYO_CLASSES = Arrays.asList(AuthenticationConfirmation.class, Command.class, CommandResponse.class, KeepAlive.class, RegisterRequest.class, KillRequest.class
+    );
 
 
     public static void main(String[] args) {
