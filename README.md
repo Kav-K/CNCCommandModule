@@ -21,3 +21,7 @@ Command-And-Control allows you to control multiple machines running a Linux-styl
 - Build the CNCCommandModule
 - Build the CNCClientModule after replacing the COMMANDIP and COMMANDPORT fields in Main.java with the respective ip and port of your command module
 - Done! (Simple right?)
+
+## Kryonet
+This project uses the kryonet library from EsotericSoftware (https://github.com/EsotericSoftware/kryonet)
+Kryonet is an asynchronous communication library for Java built upon Java NIO and makes communication throughout this program seamless.
