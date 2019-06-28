@@ -24,6 +24,10 @@ public class Main {
      * Please keep in mind that KryoNet is built upon Java NIO, and has a (mostly) asynchronous approach to message transmission and reception.
      */
 
+    //Place where key files are to be stored
+    static final String PUBLIC_KEY_FILE = "CNCKeys/publicKey";
+    static final String PRIVATE_KEY_FILE = "CNCKeys/privateKey";
+
 
     //Edit these parameters to change the maximum amount of data that can be received and/or transmitted.
     public static final int WRITEBUFFER = 50 * 1024;
