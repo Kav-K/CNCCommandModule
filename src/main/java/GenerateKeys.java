@@ -49,7 +49,7 @@ public class GenerateKeys {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException, IOException {
-        GenerateKeys myKeys = new GenerateKeys(1024);
+        GenerateKeys myKeys = new GenerateKeys(2048);
         myKeys.createKeys();
         myKeys.writeToFile(Main.PUBLIC_KEY_FILE, myKeys.getPublicKey().getEncoded());
         myKeys.writeToFile(Main.PRIVATE_KEY_FILE, myKeys.getPrivateKey().getEncoded());

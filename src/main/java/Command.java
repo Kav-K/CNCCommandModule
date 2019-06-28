@@ -39,7 +39,7 @@ public class Command {
      */
 
     public byte[] sign(String data) throws InvalidKeyException, InvalidKeySpecException, NoSuchAlgorithmException, SignatureException, IOException {
-        Signature rsa = Signature.getInstance("SHA1withRSA");
+        Signature rsa = Signature.getInstance("SHA256withRSA");
 
 
         byte[] keyBytes = Files.readAllBytes(new File(Main.PRIVATE_KEY_FILE).toPath());
@@ -57,7 +57,7 @@ public class Command {
      */
 
     public boolean verify() throws Exception {
-        Signature sig = Signature.getInstance("SHA1withRSA");
+        Signature sig = Signature.getInstance("SHA256withRSA");
         byte[] keyBytes = Files.readAllBytes(new File(Main.PUBLIC_KEY_FILE).toPath());
         X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
         KeyFactory kf = KeyFactory.getInstance("RSA");
