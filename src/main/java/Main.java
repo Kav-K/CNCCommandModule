@@ -28,6 +28,8 @@ public class Main {
     static final String PUBLIC_KEY_FILE = "CNCKeys/publicKey";
     static final String PRIVATE_KEY_FILE = "CNCKeys/privateKey";
 
+    static final int RECONNECT_REQUEST_TIMEOUT = 2000;
+
 
     //Edit these parameters to change the maximum amount of data that can be received and/or transmitted.
     public static final int WRITEBUFFER = 50 * 1024;
