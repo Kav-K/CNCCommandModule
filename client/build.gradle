@@ -1,0 +1,27 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '4.0.3'
+    id 'java'
+}
+group 'me.kaveenk'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile "com.esotericsoftware:kryonet:2.22.0-RC1"
+}
+jar {
+    doFirst {
+        manifest {
+            attributes(
+                    'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+                    'Main-Class': 'Main')
+
+        }
+    }
+}
