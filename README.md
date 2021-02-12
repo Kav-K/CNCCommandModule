@@ -1,7 +1,6 @@
 # CNCClientModule
 
-This is the counterpart COMMAND SERVER module of the Command-And-Control communication program that I have written in java.
-The CLIENT module can be found at https://github.com/Kav-K/CNCClientModule
+This is the Command-And-Control communication program that I have written in java.
 
 Command-And-Control allows you to control multiple machines running a Linux-style operating system from one commanding machine.
 
@@ -30,8 +29,8 @@ Command-And-Control allows you to control multiple machines running a Linux-styl
  ## How To Use
  - Build the CNCCommandModule
  - Build the CNCClientModule after replacing the COMMANDIP and COMMANDPORT fields in Main.java with the respective ip and port of your command module
+ - Run the jars on the servers you want connected
  - Done! (Simple right?)
- 
  
  
  ## Security
