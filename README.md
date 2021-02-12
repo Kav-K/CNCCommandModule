@@ -1,6 +1,6 @@
 # CNCClientModule
 
-This is the Command-And-Control communication program that I have written in java.
+This is the Command-And-Control communication program that I have written in Java, this was made near 2019.
 
 Command-And-Control allows you to control multiple machines running a Linux-style operating system from one commanding machine.
 
